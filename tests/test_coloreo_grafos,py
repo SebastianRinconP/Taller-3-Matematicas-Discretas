@@ -1,0 +1,22 @@
+import unittest
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src/grafos'))
+from coloreo_grafos import coloreado, validacion, resumen_, main, GRAFO
+
+
+class TestColoreo(unittest.TestCase):
+    def test_grafo_ejemplo_tiene_minimo_10_vertices(self):
+        self.assertGreaterEqual(len(GRAFO), 10)
+ 
+    def test_coloreo_del_grafo_ejemplo_es_valido(self):
+        colores = coloreado(GRAFO)
+        self.assertTrue(validacion(GRAFO, colores))
+ 
+    def test_todos_los_vertices_reciben_color(self):
+        colores = coloreado(GRAFO)
+        self.assertEqual(set(colores.keys()), set(GRAFO.keys()))
+
+if __name__ == "__main__":
+    unittest.main()
