@@ -21,7 +21,8 @@ from itertools import product
 # ---------------------------------------------------------
 
 def num_a_binario(n, num_vars):
-    return format(n, f"0{num_vars}b") #Convierte un numero a su representacion de bits
+    """Convierte un entero a su representacion binaria de num_vars bits."""
+    return format(n, f"0{num_vars}b")
 
 
 def se_combinan(term1, term2):
@@ -42,6 +43,10 @@ def se_combinan(term1, term2):
         return "".join(resultado)
     return None
 
+
+# ---------------------------------------------------------
+# 2. Algoritmo de Quine-McCluskey
+# ---------------------------------------------------------
 
 def encontrar_implicantes_primos(minterminos, num_vars):
     """
@@ -190,6 +195,10 @@ def verificar_equivalencia(minterminos, terminos, num_vars):
     return original == simplificada, original, simplificada
 
 
+# ---------------------------------------------------------
+# 4. Programa principal / caso de prueba
+# ---------------------------------------------------------
+
 def mostrar_caso(minterminos, num_vars, nombres_variables=None):
     if nombres_variables is None:
         nombres_variables = ["A", "B", "C", "D"][:num_vars]
@@ -217,4 +226,3 @@ if __name__ == "__main__":
 
     # --- Caso con 4 variables ---
     mostrar_caso(minterminos={0, 1, 2, 3, 8, 9, 10, 11}, num_vars=4, nombres_variables=["A", "B", "C", "D"])
-    

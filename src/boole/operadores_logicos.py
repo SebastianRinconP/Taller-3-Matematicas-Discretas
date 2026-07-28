@@ -11,15 +11,24 @@ simular con el operador != (distinto), ya que:
 from itertools import product
 
 
+# ---------------------------------------------------------
+# 1. Definición de las expresiones booleanas
+#    Cada expresión es una función que recibe A, B, C, D
+#    y devuelve el resultado lógico (True/False).
+# ---------------------------------------------------------
+
 def expresion1(A, B, C, D):
+    """(A AND B) OR (NOT C)"""
     return (A and B) or (not C)
 
 
 def expresion2(A, B, C, D):
+    """(A XOR B) AND C"""
     return (A != B) and C
 
 
 def expresion3(A, B, C, D):
+    """(A OR B) AND (NOT A OR C)"""
     return (A or B) and ((not A) or C)
 
 
@@ -29,14 +38,17 @@ EXPRESIONES = {
     "(A XOR B) AND C": (expresion2, ["A", "B", "C"]),
     "(A OR B) AND (NOT A OR C)": (expresion3, ["A", "B", "C", "A"]),  # A y C repetido intencional, se limpia abajo
 }
-# EXPRESIONES es un diccionario que guarda, para cada fórmula su función y la lista de variables 
-# que realmente usa (así la tabla no muestra columnas de más si una expresión no usa D, por ejemplo)
 
+# Limpiamos duplicados manteniendo el orden
 for nombre in EXPRESIONES:
     func, vars_ = EXPRESIONES[nombre]
     vars_unicas = list(dict.fromkeys(vars_))
     EXPRESIONES[nombre] = (func, vars_unicas)
 
+
+# ---------------------------------------------------------
+# 2. Generar e imprimir la tabla de verdad de una expresión
+# ---------------------------------------------------------
 
 def generar_tabla(nombre, func, variables):
     print(f"\nTabla de verdad para: {nombre}")
@@ -47,6 +59,7 @@ def generar_tabla(nombre, func, variables):
     combinaciones = list(product([False, True], repeat=len(variables)))
     for combo in combinaciones:
         valores = dict(zip(variables, combo))
+        # Rellenamos con False las variables no usadas por la expresión
         A = valores.get("A", False)
         B = valores.get("B", False)
         C = valores.get("C", False)
@@ -56,35 +69,28 @@ def generar_tabla(nombre, func, variables):
         fila = "  ".join(str(int(valores[v])) for v in variables)
         print(f"{fila}  |    {int(resultado)}")
 
-#generar_tabla usa itertools.product([False, True], repeat=n) para generar automáticamente todas las combinaciones posibles de 0 y 1 
-# según el número de variables. Por cada combinación evalúa la función y la imprime en formato de tabla.
+
+# ---------------------------------------------------------
+# 3. Evaluar una expresión con una entrada concreta
+# ---------------------------------------------------------
 
 def evaluar_entrada(func, A, B, C, D):
     return func(A, B, C, D)
 
+
+# ---------------------------------------------------------
+# 4. Programa principal
+# ---------------------------------------------------------
+
 if __name__ == "__main__":
+    # Generar todas las tablas de verdad
     for nombre, (func, variables) in EXPRESIONES.items():
         generar_tabla(nombre, func, variables)
 
+    # Ejemplo de evaluación en una entrada concreta
     print("\n--- Evaluación en una entrada concreta ---")
-    A, B, C, D = True, False, True, False #EJEMPLO CON ENTRADA COMPLETA
+    A, B, C, D = True, False, True, False
     print(f"Entrada: A={int(A)}, B={int(B)}, C={int(C)}, D={int(D)}")
     for nombre, (func, _) in EXPRESIONES.items():
         resultado = evaluar_entrada(func, A, B, C, D)
         print(f"{nombre} = {int(resultado)}")
-
-    print("INGRESADO MANUAL (True or False)")
-    A = bool(input("Ingrese su valor A: ").lower().capitalize())
-    B = bool(input("Ingrese su valor B: ").lower().capitalize())
-    C = bool(input("Ingrese su valor C: ").lower().capitalize())
-    D = bool(input("Ingrese su valor D: ").lower().capitalize())
-
-    for nombre, (func, _) in EXPRESIONES.items():
-        resultado = evaluar_entrada(func, A, B, C, D)
-        print(f"{nombre} = {int(resultado)}")
-""""
-    Un circuito lógico es un sistema electrónico o matemático que procesa 
-    información usando señales de encendido y apagado. Sus componentes principales son las compuertas lógicas, 
-    las entradas binarias y las salidas de datos, las tablas de verdad se relacionan con los circuitos logicos 
-    ya que modelan todos los posibles resultados de un circuito logico, dependiendo de sus valores de entrada
-"""
