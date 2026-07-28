@@ -1,36 +1,10 @@
-"""
-Simplificacion booleana (metodo Quine-McCluskey, version reducida)
-------------------------------------------------------------------
-Recibe una funcion booleana de 3 o 4 variables definida por sus MINTERMINOS
-(las filas de la tabla de verdad donde el resultado es 1) y produce una
-expresion simplificada en forma de SUMA DE PRODUCTOS (OR de terminos AND).
-
-Un MINTERMINO es un numero que representa, en binario, UNA combinacion de
-entradas para la cual la funcion vale 1. Por ejemplo, con variables A B C,
-el minterm 5 = 101 en binario significa A=1, B=0, C=1.
-
-No se usa ninguna libreria externa: todo el algoritmo (agrupar, combinar,
-elegir implicantes primos) esta implementado a mano.
-"""
-
 from itertools import product
 
-
-# ---------------------------------------------------------
-# 1. Utilidades basicas
-# ---------------------------------------------------------
-
 def num_a_binario(n, num_vars):
-    """Convierte un entero a su representacion binaria de num_vars bits."""
     return format(n, f"0{num_vars}b")
 
 
 def se_combinan(term1, term2):
-    """
-    Comprueba si dos terminos binarios (con posibles '-') difieren
-    en exactamente un bit. Si es asi, devuelve el termino combinado
-    (con un '-' en la posicion que difiere). Si no, devuelve None.
-    """
     diferencias = 0
     resultado = []
     for b1, b2 in zip(term1, term2):
@@ -49,14 +23,6 @@ def se_combinan(term1, term2):
 # ---------------------------------------------------------
 
 def encontrar_implicantes_primos(minterminos, num_vars):
-    """
-    Combina iterativamente los terminos binarios de los minterminos hasta
-    que ya no se puedan combinar mas. Los terminos que sobreviven sin
-    combinarse en una ronda son los IMPLICANTES PRIMOS.
-
-    Cada implicante primo se guarda junto con el conjunto de minterminos
-    originales que cubre.
-    """
     # grupo inicial: (termino_binario, {minterminos que representa})
     grupo_actual = {num_a_binario(m, num_vars): {m} for m in minterminos}
 
@@ -75,7 +41,6 @@ def encontrar_implicantes_primos(minterminos, num_vars):
                     cubiertos = grupo_actual[terminos[i]] | grupo_actual[terminos[j]]
                     combinados[nuevo] = combinados.get(nuevo, set()) | cubiertos
 
-        # los terminos que NO se combinaron con nadie son implicantes primos
         for termino in terminos:
             if termino not in usados:
                 implicantes_primos[termino] = grupo_actual[termino]
@@ -86,13 +51,6 @@ def encontrar_implicantes_primos(minterminos, num_vars):
 
 
 def elegir_implicantes_esenciales(implicantes_primos, minterminos):
-    """
-    Construye una tabla de cobertura (que implicante cubre que minterminos)
-    y selecciona un conjunto minimo de implicantes primos que cubra todos
-    los minterminos:
-      1) primero los ESENCIALES (el unico que cubre cierto minterm)
-      2) luego, de forma golosa, los que cubren mas minterminos restantes
-    """
     pendientes = set(minterminos)
     seleccionados = []
 
@@ -105,7 +63,6 @@ def elegir_implicantes_esenciales(implicantes_primos, minterminos):
     for t in seleccionados:
         pendientes -= implicantes_primos[t]
 
-    # Paso 2: cobertura golosa de lo que falta
     while pendientes:
         mejor = max(
             implicantes_primos,
@@ -121,12 +78,6 @@ def elegir_implicantes_esenciales(implicantes_primos, minterminos):
 
 
 def termino_a_expresion(termino, nombres_variables):
-    """
-    Convierte un termino binario con '-' (p. ej. '1-0') en un producto
-    (AND) de literales, p. ej. 'A AND (NOT B)'.
-    Bit '1' -> variable en positivo. Bit '0' -> variable negada.
-    Bit '-' -> variable no aparece (fue eliminada al simplificar).
-    """
     literales = []
     for bit, var in zip(termino, nombres_variables):
         if bit == "1":
@@ -139,10 +90,7 @@ def termino_a_expresion(termino, nombres_variables):
 
 
 def simplificar(minterminos, num_vars, nombres_variables=None):
-    """
-    Funcion principal: recibe los minterminos y devuelve
-    (lista_de_terminos_elegidos, expresion_en_texto)
-    """
+
     if nombres_variables is None:
         nombres_variables = ["A", "B", "C", "D"][:num_vars]
 

@@ -14,3 +14,6 @@ Sebastian Polo Alvarez
 
 3. Ejecutar todas las pruebas automáticas:
    python -m unittest discover tests
+
+4. Las Bibliotecas del boole:
+ itertools
