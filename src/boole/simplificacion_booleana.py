@@ -18,10 +18,6 @@ def se_combinan(term1, term2):
     return None
 
 
-# ---------------------------------------------------------
-# 2. Algoritmo de Quine-McCluskey
-# ---------------------------------------------------------
-
 def encontrar_implicantes_primos(minterminos, num_vars):
     # grupo inicial: (termino_binario, {minterminos que representa})
     grupo_actual = {num_a_binario(m, num_vars): {m} for m in minterminos}
@@ -104,11 +100,6 @@ def simplificar(minterminos, num_vars, nombres_variables=None):
     expresion = " OR ".join(f"({p})" for p in productos)
     return elegidos, expresion
 
-
-# ---------------------------------------------------------
-# 3. Verificacion: comparar tabla de verdad original vs simplificada
-# ---------------------------------------------------------
-
 def tabla_desde_minterminos(minterminos, num_vars):
     """Genera la tabla de verdad (dict: tupla_de_bits -> 0/1) a partir de los minterminos."""
     tabla = {}
@@ -142,10 +133,6 @@ def verificar_equivalencia(minterminos, terminos, num_vars):
     simplificada = tabla_desde_terminos(terminos, num_vars)
     return original == simplificada, original, simplificada
 
-
-# ---------------------------------------------------------
-# 4. Programa principal / caso de prueba
-# ---------------------------------------------------------
 
 def mostrar_caso(minterminos, num_vars, nombres_variables=None):
     if nombres_variables is None:
