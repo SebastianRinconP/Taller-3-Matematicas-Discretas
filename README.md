@@ -16,7 +16,7 @@ En este repositorio se presentan las soluciones implementadas en Python para los
 
 ## Requisitos
 
-Necesitas **Python 3.11** o superior. No requiere instalar dependencias externas complejas, ya que utiliza la librería estándar de Python (`unittest`, `os`, `sys`, etc.).
+Necesitas **Python 3.11** o superior. utiliza librerías estándar de Python como: (`os`, `sys`, etc.). y tambien (`pytest`) que se instala escribiendo (`pip install pytest`) en la terminal.
 
 ---
 
@@ -31,7 +31,7 @@ Taller-3-Matematicas-Discretas/
 │   ├── boole/             # Ejercicios 7 y 8 (Tablas de verdad, Simplificación booleana)
 │   └── cuantica/          # Ejercicios 9 y 10 (Entropía de Shannon, Simulador cuántico)
 │
-└── tests/                 # Pruebas unitarias automatizadas (unittest) para cada módulo
+└── tests/                 # Pruebas generales o unitarias automatizadas (pytest) 
 
 ```
 
