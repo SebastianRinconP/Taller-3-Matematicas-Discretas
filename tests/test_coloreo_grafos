@@ -1,0 +1,120 @@
+import unittest
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src/grafos'))
+from coloreo_grafos import (
+    GRAFO,
+    coloreado,
+    validacion,
+    resumen_,
+)
+
+
+class TestColoreado(unittest.TestCase):
+
+    def test_coloreado_del_grafo_del_taller_es_valido(self):
+        # Condicion basica: el coloreo que produce el algoritmo debe ser
+        # valido para el grafo de materias del enunciado
+        colores = coloreado(GRAFO)
+        self.assertTrue(validacion(GRAFO, colores))
+
+    def test_todos_los_vertices_tienen_color_asignado(self):
+        colores = coloreado(GRAFO)
+        self.assertEqual(set(colores.keys()), set(GRAFO.keys()))
+
+    def test_vertices_adyacentes_tienen_colores_distintos(self):
+        # Prueba directa arista por arista, con subTest para ver
+        # exactamente cual arista fallaria si algo se rompe
+        colores = coloreado(GRAFO)
+        for vertice, vecinos in GRAFO.items():
+            for vecino in vecinos:
+                with self.subTest(vertice=vertice, vecino=vecino):
+                    self.assertNotEqual(colores[vertice], colores[vecino])
+
+    def test_colores_empiezan_en_cero(self):
+        # El algoritmo greedy usa el color mas bajo disponible,
+        # asi que el color 0 siempre deberia usarse
+        colores = coloreado(GRAFO)
+        self.assertIn(0, colores.values())
+
+
+class TestValidacion(unittest.TestCase):
+
+    def test_validacion_detecta_coloreo_invalido(self):
+        # Dos vertices adyacentes ("Quimica" y "Mecanica") con el mismo color
+        coloreo_invalido = {v: 0 for v in GRAFO}
+        self.assertFalse(validacion(GRAFO, coloreo_invalido))
+
+    def test_validacion_acepta_coloreo_manual_valido(self):
+        # Coloreo hecho a mano para un grafo simple: A-B-C en linea
+        grafo_simple = {"A": ["B"], "B": ["A", "C"], "C": ["B"]}
+        coloreo_valido = {"A": 0, "B": 1, "C": 0}
+        self.assertTrue(validacion(grafo_simple, coloreo_valido))
+
+
+class TestResumen(unittest.TestCase):
+
+    def test_resumen_agrupa_los_mismos_vertices_que_coloreado(self):
+        colores = coloreado(GRAFO)
+        resumen = resumen_(colores)
+
+        # Juntando todos los vertices de todos los grupos del resumen
+        # se debe recuperar exactamente el conjunto original de vertices
+        vertices_en_resumen = set()
+        for lista_vertices in resumen.values():
+            vertices_en_resumen.update(lista_vertices)
+
+        self.assertEqual(vertices_en_resumen, set(GRAFO.keys()))
+
+    def test_resumen_no_mezcla_colores(self):
+        # Cada vertice dentro de un mismo grupo del resumen debe
+        # tener realmente ese color segun 'coloreado'
+        colores = coloreado(GRAFO)
+        resumen = resumen_(colores)
+        for color, vertices in resumen.items():
+            with self.subTest(color=color):
+                for vertice in vertices:
+                    self.assertEqual(colores[vertice], color)
+
+
+class TestCasosDeGrafosConocidos(unittest.TestCase):
+    # Prueba con grafos donde se sabe de antemano cuantos colores
+    # deberia necesitar la coloracion, para validar el algoritmo
+    # con algo independiente del grafo del taller
+
+    def test_grafo_bipartito_usa_maximo_dos_colores(self):
+        # Un grafo bipartito (ciclo par) siempre se puede colorear con 2 colores
+        grafo_bipartito = {
+            "A": ["B", "D"],
+            "B": ["A", "C"],
+            "C": ["B", "D"],
+            "D": ["C", "A"],
+        }
+        colores = coloreado(grafo_bipartito)
+        self.assertTrue(validacion(grafo_bipartito, colores))
+        self.assertLessEqual(len(set(colores.values())), 2)
+
+    def test_grafo_completo_usa_exactamente_n_colores(self):
+        # En un grafo completo K4, todos los vertices son vecinos entre si,
+        # asi que necesariamente se necesitan 4 colores distintos
+        grafo_completo = {
+            "A": ["B", "C", "D"],
+            "B": ["A", "C", "D"],
+            "C": ["A", "B", "D"],
+            "D": ["A", "B", "C"],
+        }
+        colores = coloreado(grafo_completo)
+        self.assertTrue(validacion(grafo_completo, colores))
+        self.assertEqual(len(set(colores.values())), 4)
+
+    def test_grafo_sin_aristas_usa_un_solo_color(self):
+        # Si ningun vertice tiene vecinos, todos pueden compartir el color 0
+        grafo_sin_aristas = {"A": [], "B": [], "C": []}
+        colores = coloreado(grafo_sin_aristas)
+        self.assertTrue(validacion(grafo_sin_aristas, colores))
+        self.assertEqual(set(colores.values()), {0})
+
+
+if __name__ == '__main__':
+    unittest.main()
