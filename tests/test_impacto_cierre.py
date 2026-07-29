@@ -1,7 +1,7 @@
 import sys
 import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src", "redes"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src", "grafos"))
 
 from grafo_ponderado import GrafoPonderado
 from ruta_minima import red_del_campus
