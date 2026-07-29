@@ -1,5 +1,5 @@
 # Ejercicio 1 - Cifrado por desplazamiento (César).
-# Versión simple: se recorre el texto letra por letra con un ciclo for.
+
 
 ALFABETO_MAYUS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ALFABETO_MINUS = "abcdefghijklmnopqrstuvwxyz"
