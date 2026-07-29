@@ -20,8 +20,10 @@ Python
    python -m unittest discover tests
 
 4. Las Bibliotecas del boole utilizan la siguiente :
- itertools
- math
+ itertools,
+ math,
+ random
+
 ## Ejercicio 6: Coloreo de Grafos
 En el ejercicio 6, se trabaja un coloreo de grafos, donde ningun grafo puede chocar con un grafo del mismo color, en este caso no se usa ninguna biblioteca, y se usa un diccionario para ver los grafos y con que chocan
 ## EJercicio 7:
@@ -32,3 +34,6 @@ En este ejercicio se trata de simplificar textos booleanos muy largos y como se 
 
 ## Ejercicio 9: Entropia de Shanon
 En el ejercicio 9, se trabaja la entropia de shanon donde mide la repetitividad de los textos, se utiliza la biblioteca math para desarrollar el ejercicio
+
+# Ejercicio 10: SImulador cuantico
+En el ejercicio 10, se trabaja un simulador cuantico donde usa diferentes compuertas en forma de matrices, se ve la probabilidad de medir 0 y 1 y se simulan las 1000 mediciones, utiliza la libreria math y random
